@@ -101,7 +101,7 @@ public class IZapatillas extends JFrame {
         return panel;
     }
 
-
+//dalete
     private JPanel crearBuscador() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         panel.setPreferredSize(new Dimension(800, 50));
