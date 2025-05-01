@@ -11,7 +11,7 @@ public class Modelo {
 
     public Modelo() {
     }
-
+//modelo
     public Modelo(int id, String genero, String nombre, Categoria categoria, Marca marca) {
         this.id = id;
         this.genero = genero;

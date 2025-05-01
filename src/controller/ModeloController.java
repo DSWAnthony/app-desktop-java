@@ -161,7 +161,7 @@ public class ModeloController implements ActionListener {
             vista.mostrarMensaje("ID inválido.");
         }
     }
-
+//modelo
     private void eliminar() {
         try {
             int id = Integer.parseInt(vista.getTxtID().getText());
