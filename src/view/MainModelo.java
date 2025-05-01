@@ -3,7 +3,7 @@ package view;
 
 import controller.ModeloController;
 import javax.swing.SwingUtilities;
-
+//modelo
 public class MainModelo {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

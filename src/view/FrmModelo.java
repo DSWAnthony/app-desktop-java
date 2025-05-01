@@ -6,7 +6,7 @@ import model.Categoria;
 import model.Marca;
 
 public class FrmModelo extends JFrame {
-
+//modelo
     private JTextField txtID, txtNombre;
     private JRadioButton rbtnMasculino, rbtnFemenino, rbtnUnisex;
     private ButtonGroup grupoGenero;

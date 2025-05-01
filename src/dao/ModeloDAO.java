@@ -101,7 +101,7 @@ public class ModeloDAO extends Conexion implements IRepositoryCRUD<Modelo> {
     public Modelo traerEntidad(int id) {
         return null;
     }
-
+//modelo
     public List<Categoria> listarCategorias() {
         List<Categoria> categorias = new ArrayList<>();
         String sql = "SELECT categoria_id, nombre FROM categoria";
