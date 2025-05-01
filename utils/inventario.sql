@@ -6,6 +6,8 @@
 -- Tiempo de generación: 30-04-2025 a las 18:01:12
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
+create database inventario;
+use inventario;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -54,6 +56,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ListarZapatillas` ()   BEGIN
 END$$
 
 DELIMITER ;
+
 
 -- --------------------------------------------------------
 
@@ -320,6 +323,95 @@ INSERT INTO `ubicacion_almacen` (`ubicacion_id`, `contenedor`, `estante`, `pasil
 (13, '1', '1', 'C'),
 (14, '2', '1', 'C'),
 (15, '3', '1', 'C');
+
+-- Crear una ubicación
+DELIMITER $$
+
+CREATE PROCEDURE sp_crearUbicacion(
+    IN p_contenedor VARCHAR(50),
+    IN p_estante VARCHAR(50),
+    IN p_pasillo VARCHAR(50)
+)
+BEGIN
+    -- Validar duplicados antes de insertar
+    IF NOT EXISTS (
+        SELECT 1 FROM ubicacion_almacen
+        WHERE contenedor = p_contenedor AND estante = p_estante AND pasillo = p_pasillo
+    ) THEN
+        INSERT INTO ubicacion_almacen (contenedor, estante, pasillo)
+        VALUES (p_contenedor, p_estante, p_pasillo);
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- Listar todas las ubicaciones
+DELIMITER $$
+
+CREATE PROCEDURE sp_ListarUbicaciones()
+BEGIN
+    SELECT * FROM ubicacion_almacen;
+END$$
+
+DELIMITER ;
+
+-- Buscar ubicación por ID
+DELIMITER $$
+
+CREATE PROCEDURE sp_buscarUbicacionPorId(
+    IN p_id INT
+)
+BEGIN
+    SELECT * FROM ubicacion_almacen
+    WHERE ubicacion_id = p_id;
+END$$
+
+DELIMITER ;
+
+-- Actualizar ubicación
+DELIMITER $$
+
+CREATE PROCEDURE sp_ActualizarUbicacion(
+    IN p_id INT,
+    IN p_contenedor VARCHAR(50),
+    IN p_estante VARCHAR(50),
+    IN p_pasillo VARCHAR(50)
+)
+BEGIN
+    UPDATE ubicacion_almacen
+    SET contenedor = p_contenedor,
+        estante = p_estante,
+        pasillo = p_pasillo
+    WHERE ubicacion_id = p_id;
+END$$
+
+DELIMITER ;
+
+-- Eliminar ubicación
+DELIMITER $$
+
+CREATE PROCEDURE sp_EliminarUbicacion(
+    IN p_id INT
+)
+BEGIN
+    DELETE FROM ubicacion_almacen
+    WHERE ubicacion_id = p_id;
+END$$
+
+DELIMITER ;
+
+-- Filtrar ubicaciones por nombre de contenedor
+DELIMITER $$
+
+CREATE PROCEDURE sp_FiltrarUbicacionesNombre(
+    IN p_contenedor VARCHAR(100)
+)
+BEGIN
+    SELECT * FROM ubicacion_almacen
+    WHERE contenedor LIKE p_contenedor;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
