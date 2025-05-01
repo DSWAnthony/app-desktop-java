@@ -43,10 +43,15 @@ public class Categoria {
         this.descripcion = descripcion;
     }
 
+    public String mostrarNombre() {
+        return nombre;
+    }
+
     @Override
     public String toString() {
-        return "Categoria{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + '}';
+        return nombre;
+        // return "Categoria{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + '}';
     }
     
-
+    
 }

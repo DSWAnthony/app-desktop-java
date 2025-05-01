@@ -28,11 +28,15 @@ public class Marca {
         this.nombre = nombre;
     }
 
-    
-    
+
+    public String mostrarNombre() {
+        return nombre;
+    }
+
     @Override
     public String toString() {
-        return "Marca{" + "id=" + id + ", nombre=" + nombre + '}';
+        return nombre;
+        // return "Marca{" + "id=" + id + ", nombre=" + nombre + '}'; // original
     }
     
     
