@@ -29,12 +29,12 @@ public class FrmModelo extends JFrame {
         JLabel lblCategoria = new JLabel("Categoría:");
         JLabel lblMarca = new JLabel("Marca:");
 
-        // Text Fields
+        
         txtID = new JTextField();
         txtID.setEditable(false);
         txtNombre = new JTextField();
 
-        // Radio Buttons for Genero
+        
         rbtnMasculino = new JRadioButton("Masculino");
         rbtnFemenino = new JRadioButton("Femenino");
         rbtnUnisex = new JRadioButton("Unisex");
@@ -44,22 +44,22 @@ public class FrmModelo extends JFrame {
         grupoGenero.add(rbtnFemenino);
         grupoGenero.add(rbtnUnisex);
 
-        // Combo Boxes
+        
         cboCategoria = new JComboBox<>();
         cboMarca = new JComboBox<>();
 
-        // Buttons
+        
         btnAgregar = new JButton("Agregar");
         btnActualizar = new JButton("Editar");
         btnEliminar = new JButton("Eliminar");
         btnLimpiar = new JButton("Nuevo");
 
-        // Table
+        
         tableModel = new DefaultTableModel(new String[]{"ID", "Nombre", "Género", "Categoría", "Marca"}, 0);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
 
-        // Positioning
+        
         lblID.setBounds(50, 20, 100, 30);
         txtID.setBounds(150, 20, 200, 30);
 
@@ -84,7 +84,7 @@ public class FrmModelo extends JFrame {
         btnEliminar.setBounds(350, 500, 120, 30);
         btnLimpiar.setBounds(500, 500, 120, 30);
 
-        // Add components to frame
+        
         add(lblID); add(txtID);
         add(lblNombre); add(txtNombre);
         add(lblGenero); add(rbtnMasculino); add(rbtnFemenino); add(rbtnUnisex);
@@ -99,7 +99,7 @@ public class FrmModelo extends JFrame {
         SwingUtilities.invokeLater(() -> txtNombre.requestFocusInWindow());
     }
 
-    // Getters
+    
     public JTextField getTxtID() {
         return txtID;
     }
@@ -140,7 +140,7 @@ public class FrmModelo extends JFrame {
         return tableModel;
     }
 
-    // Método para obtener el género seleccionado
+    
     public String getGeneroSeleccionado() {
         if (rbtnMasculino.isSelected()) return "Masculino";
         if (rbtnFemenino.isSelected()) return "Femenino";
@@ -148,7 +148,7 @@ public class FrmModelo extends JFrame {
         return "";
     }
 
-    // Método para establecer el género seleccionado desde un string
+    
     public void setGenero(String genero) {
         switch (genero) {
             case "Masculino" -> rbtnMasculino.setSelected(true);
@@ -157,7 +157,7 @@ public class FrmModelo extends JFrame {
         }
     }
 
-    // Limpiar los campos del formulario
+    
     public void limpiarCampos() {
         txtID.setText("");
         txtNombre.setText("");

@@ -94,12 +94,12 @@ public class ModeloDAO extends Conexion implements IRepositoryCRUD<Modelo> {
 
     @Override
     public List<Modelo> filtrar(String params) {
-        return new ArrayList<>(); // Implementación opcional
+        return new ArrayList<>();
     }
 
     @Override
     public Modelo traerEntidad(int id) {
-        return null; // Implementación opcional
+        return null;
     }
 
     public List<Categoria> listarCategorias() {

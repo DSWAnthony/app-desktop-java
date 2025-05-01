@@ -111,7 +111,7 @@ public class ModeloController implements ActionListener {
 
     private void guardar() {
         String nombre = vista.getTxtNombre().getText().trim();
-        String genero = vista.getGeneroSeleccionado(); // ← Nuevo método
+        String genero = vista.getGeneroSeleccionado();
         Categoria categoria = (Categoria) vista.getCboCategoria().getSelectedItem();
         Marca marca = (Marca) vista.getCboMarca().getSelectedItem();
 
@@ -139,7 +139,7 @@ public class ModeloController implements ActionListener {
         try {
             int id = Integer.parseInt(vista.getTxtID().getText());
             String nombre = vista.getTxtNombre().getText().trim();
-            String genero = vista.getGeneroSeleccionado(); // ← Nuevo método
+            String genero = vista.getGeneroSeleccionado();
             Categoria categoria = (Categoria) vista.getCboCategoria().getSelectedItem();
             Marca marca = (Marca) vista.getCboMarca().getSelectedItem();
 
