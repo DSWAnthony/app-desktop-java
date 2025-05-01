@@ -11,8 +11,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModeloDAO extends Conexion implements IRepositoryCRUD<Modelo> {
-
+ 
     @Override
+    public boolean registrar(Modelo modelo) {
+    String sql = "{CALL sp_registrar_modelo(?, ?, ?, ?)}";
+    try (Connection cn = getConexion(); CallableStatement cs = cn.prepareCall(sql)) {
+        cs.setString(1, modelo.getNombre());
+        cs.setString(2, modelo.getGenero());
+        cs.setInt(3, modelo.getCategoria().getId());
+        cs.setInt(4, modelo.getMarca().getId());
+        return cs.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+        }
+    }
+    /*@Override
     public boolean registrar(Modelo modelo) {
         String sql = "INSERT INTO modelo(nombre, genero, categoria_id, marca_id) VALUES (?, ?, ?, ?)";
         try (Connection cn = getConexion(); PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -26,7 +40,7 @@ public class ModeloDAO extends Conexion implements IRepositoryCRUD<Modelo> {
             return false;
         }
     }
-
+*/
     @Override
     public boolean actualizar(Modelo modelo) {
         String sql = "UPDATE modelo SET nombre = ?, genero = ?, categoria_id = ?, marca_id = ? WHERE modelo_id = ?";
