@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2"/>
         <group>
             <file>file:/C:/Users/jaren/OneDrive/Documentos/NetBeansProjects/proyectofn/app-desktop-java/src/dao/ModeloDAO.java</file>
             <file>file:/C:/Users/jaren/OneDrive/Documentos/NetBeansProjects/proyectofn/app-desktop-java/src/controller/ModeloController.java</file>
             <file>file:/C:/Users/jaren/OneDrive/Documentos/NetBeansProjects/proyectofn/app-desktop-java/src/view/FrmModelo.java</file>
         </group>
-=======
-        <group/>
->>>>>>> e934e2e (gitignore)
     </open-files>
 </project-private>
