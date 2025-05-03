@@ -13,30 +13,25 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import model.Categoria;
-import javax.swing.RowFilter;
+
 import javax.swing.table.TableRowSorter;
-import javax.swing.JOptionPane;
+import javax.swing.JInternalFrame;
 import model.Categoria;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class FrmCategoria extends JFrame {
+public class FrmCategoria extends JInternalFrame {
 
     private JTextField txtNombre, txtDescrip;
     private JButton btnRegistrar, btnActualizar, btnEliminar;
     private JTextField txtBuscar;
     private JTable tbCategorias;
     private DefaultTableModel modeloTabla;
+    private JRadioButton opcion1;
+    private JRadioButton opcion2;
 
     private TableRowSorter<DefaultTableModel> filasClasificador;
 
@@ -56,9 +51,11 @@ public class FrmCategoria extends JFrame {
         add(crearTabla(), BorderLayout.SOUTH);
 
         pack();
-        setLocationRelativeTo(null);
+        setLocation(0, 0); // Ajusta según sea necesario
         setVisible(true);
         agregarEventos();
+        setResizable(false);
+
 
     }
 
@@ -102,14 +99,27 @@ public class FrmCategoria extends JFrame {
         JPanel panel = new JPanel(null);
         panel.setPreferredSize(new Dimension(800, 80));
 
-        JLabel lblBuscar = new JLabel("Buscar:");
+        JLabel lblBuscar = new JLabel("Buscar por");
         lblBuscar.setBounds(40, 20, 70, 30);
 
         txtBuscar = new JTextField(20);
-        txtBuscar.setBounds(130, 20, 200, 30);
+        txtBuscar.setBounds(250, 20, 200, 30);
 
+        opcion1 = new JRadioButton("Nombre:");
+        opcion1.setBounds(120, 10, 100, 30);
+
+        opcion2 = new JRadioButton("Descripcion: ");
+        opcion2.setBounds(120, 30, 130, 30);
+
+        ButtonGroup grupoOpciones = new ButtonGroup();
+        grupoOpciones.add(opcion1);
+        grupoOpciones.add(opcion2);
+
+        panel.add(opcion1);
+        panel.add(opcion2);
         panel.add(lblBuscar);
         panel.add(txtBuscar);
+
 
         return panel;
     }
@@ -220,7 +230,17 @@ public class FrmCategoria extends JFrame {
         txtBuscar.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 String filtro = txtBuscar.getText();
-                filasClasificador.setRowFilter(RowFilter.regexFilter("(?i)" + filtro));
+
+                if (opcion1.isSelected()) {
+                    // Buscar por nombre (columna 1)
+                    filasClasificador.setRowFilter(RowFilter.regexFilter("(?i)" + filtro, 1));
+                } else if (opcion2.isSelected()) {
+                    // Buscar por descripción (columna 2)
+                    filasClasificador.setRowFilter(RowFilter.regexFilter("(?i)" + filtro, 2));
+                } else {
+                    // Si no hay opción seleccionada, buscar en todas
+                    filasClasificador.setRowFilter(RowFilter.regexFilter("(?i)" + filtro));
+                }
             }
         });
 
