@@ -651,3 +651,87 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_categoria`(in cod int,in nom varchar(40),in des text)
+BEGIN 
+
+	update categoria
+    set 
+    nombre= nom,
+    descripcion = des
+    where 
+    categoria_id=cod;
+
+END $$
+
+DELIMITER ;
+
+
+
+
+
+
+
+DELIMITER$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_eliminar_categoria`(in cod int)
+BEGIN 
+
+	delete from categoria where categoria_id = cod;
+
+END $$
+
+DELIMTER ; 
+
+
+
+DELIMITER$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_crear_categoria`(in nom varchar(255),in des text)
+BEGIN 
+
+	insert into categoria
+    (nombre,descripcion)
+    values
+    (nom,des);
+
+END$$
+
+DELIMTER ;
+
+DELIMTER$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_filtrar_categoria`(in nom varchar(100))
+BEGIN
+
+	select * from categoria where nombre 
+    COLLATE utf8mb4_general_ci
+    like 
+    concat('%',nom,'%');
+
+END$$
+
+DELIMTER ;
+
+
+DELIMITER$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_listar_categorias`()
+BEGIN 
+
+	SELECT * FROM categoria;
+
+END$$
+
+DELIMITER ;
+
+DELIMITER$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_traer_entidad`(in cod int)
+BEGIN
+
+select * from categoria where categoria_id = cod;
+
+END$$
+DELIMITER ;
