@@ -102,7 +102,7 @@ public class CategoriaDAO extends Conexion implements IRepositoryCRUD<Categoria>
     @Override
     public List<Categoria> listar() {
 
-        String sql = "{call sp_listar_categorias()";
+        String sql = "{call sp_listar_categorias()}";
         List<Categoria> lista = new ArrayList<>();
 
         try {

@@ -12,6 +12,12 @@ public class Categoria {
         this.nombre = nombre;
         this.descripcion = descripcion;
     }
+    
+    public Categoria(int id, String nombre, String descripcion) {
+        this.id=id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
 
     public int getId() {
         return id;
