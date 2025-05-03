@@ -666,3 +666,57 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+-- Esto es para ACCTUALIZAR
+DELIMITER $$
+CREATE PROCEDURE sp_actualizar_modelo(
+    IN p_nombre VARCHAR(100),
+    IN p_genero VARCHAR(50),
+    IN p_categoria_id INT,
+    IN p_marca_id INT,
+    IN p_modelo_id INT
+)
+BEGIN
+    UPDATE modelo
+    SET nombre = p_nombre,
+        genero = p_genero,
+        categoria_id = p_categoria_id,
+        marca_id = p_marca_id
+    WHERE modelo_id = p_modelo_id;
+END $$
+DELIMITER ;
+
+-- Esto solo me servir para eliminar
+DELIMITER $$
+CREATE PROCEDURE sp_eliminar_modelo(IN p_modelo_id INT)
+BEGIN
+    DELETE FROM modelo WHERE modelo_id = p_modelo_id;
+END $$
+DELIMITER ;
+
+-- Se puede Listar todos
+DELIMITER $$
+CREATE PROCEDURE sp_listar_modelos()
+BEGIN
+    SELECT m.modelo_id, m.nombre, m.genero,
+           c.categoria_id, c.nombre AS categoria_nombre,
+           ma.marca_id, ma.nombre AS marca_nombre
+    FROM modelo m
+    JOIN categoria c ON m.categoria_id = c.categoria_id
+    JOIN marca ma ON m.marca_id = ma.marca_id;
+END $$
+DELIMITER ;
+
+-- Aqui atreigo por IDs
+DELIMITER $$
+CREATE PROCEDURE sp_traer_modelo_por_id(IN p_modelo_id INT)
+BEGIN
+    SELECT m.modelo_id, m.nombre, m.genero,
+           c.categoria_id, c.nombre AS categoria_nombre,
+           ma.marca_id, ma.nombre AS marca_nombre
+    FROM modelo m
+    JOIN categoria c ON m.categoria_id = c.categoria_id
+    JOIN marca ma ON m.marca_id = ma.marca_id
+    WHERE m.modelo_id = p_modelo_id;
+END $$
+DELIMITER ;
