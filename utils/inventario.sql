@@ -652,6 +652,21 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
+DELIMITER $$
+
+CREATE PROCEDURE sp_registrar_modelo(
+    IN p_nombre VARCHAR(100),
+    IN p_genero VARCHAR(20),
+    IN p_categoria_id INT,
+    IN p_marca_id INT
+)
+BEGIN
+    INSERT INTO modelo(nombre, genero, categoria_id, marca_id)
+    VALUES (p_nombre, p_genero, p_categoria_id, p_marca_id);
+END $$
+
+DELIMITER ;
+
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_categoria`(in cod int,in nom varchar(40),in des text)
