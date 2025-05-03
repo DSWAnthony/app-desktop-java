@@ -2,6 +2,7 @@ package dao;
 
 import config.Conexion;
 import model.Inventario;
+import model.UbicacionCombo;
 import repository.IRepositoryCRUD;
 
 import java.sql.*;
@@ -87,7 +88,7 @@ public List<Inventario> listar() {
 
     @Override
     public Inventario traerEntidad(int id) {
-        String sql = "{CALL sp_BuscarInventarioPorId(?)}";
+        String sql = "{CALL sp_ObtenerInventarioPorId(?)}";
         try (Connection con = Conexion.getConexion();
              CallableStatement cs = con.prepareCall(sql)) {
             cs.setInt(1, id);
@@ -95,7 +96,7 @@ public List<Inventario> listar() {
                 if (rs.next()) {
                     Inventario i = new Inventario();
                     i.setInventarioId(rs.getInt("inventario_id"));
-                    i.setZapatoId(rs.getInt("zapato_id"));
+                    
                     i.setUbicacionId(rs.getInt("ubicacion_id"));
                     i.setCantidadActual(rs.getInt("cantidad_actual"));
                     i.setSku(rs.getString("sku"));
@@ -112,6 +113,41 @@ public List<Inventario> listar() {
         }
         return null;
     }
+public List<UbicacionCombo> obtenerUbicaciones() {
+    List<UbicacionCombo> listaUbicaciones = new ArrayList<>();
+    String sql = "SELECT ubicacion_id, CONCAT(pasillo, '-', estante, '-', contenedor) AS nombre FROM ubicacion_almacen";
+    try (Connection con = Conexion.getConexion();
+         Statement stmt = con.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+        while (rs.next()) {
+            int id = rs.getInt("ubicacion_id");
+            String nombre = rs.getString("nombre");
+            listaUbicaciones.add(new UbicacionCombo(id, nombre));
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al obtener ubicaciones: " + e.getMessage());
+    }
+    return listaUbicaciones;
+}
+
+public UbicacionCombo obtenerUbicacionPorId(int id) {
+    String sql = "SELECT ubicacion_id, CONCAT(pasillo, '-', estante, '-', contenedor) AS nombre FROM ubicacion_almacen WHERE ubicacion_id = ?";
+    try (Connection con = Conexion.getConexion();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                int ubicacionId = rs.getInt("ubicacion_id");
+                String nombre = rs.getString("nombre");
+                return new UbicacionCombo(ubicacionId, nombre);
+            }
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al obtener ubicación: " + e.getMessage());
+    }
+    return null;
+}
+
 
     @Override
     public List<Inventario> filtrar(String params) {

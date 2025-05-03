@@ -7,11 +7,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
-
+import model.UbicacionCombo;
 public class IInventario extends JFrame {
 
     private JTextField txtSku, txtCantidad;
-    private JComboBox<String> cmbAlmacen;
+    private JComboBox<UbicacionCombo> cmbAlmacen;
     private JButton btnRegistrar, btnActualizar, btnEliminar, btnLimpiar, btnNuevo;
     private JTable tbInventario;
     private DefaultTableModel modeloTabla;
@@ -19,72 +19,88 @@ public class IInventario extends JFrame {
 
     // Constructor del formulario
     public IInventario() {
-        super("Gestión de Inventario");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(null);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
+    super("Gestión de Inventario");
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setLayout(null);
+    setSize(800, 600);
+    setLocationRelativeTo(null);
 
-        inventarioController = new InventarioController();
+    inventarioController = new InventarioController();
 
-        add(crearFormulario());
-        add(crearTabla());
+    add(crearFormulario());
+    add(crearTabla());
 
-        agregarEventos();
+    agregarEventos();
 
-        setVisible(true);
-    }
+    
+    txtSku.setEnabled(false);
+
+    setVisible(true);
+}
 
     private void agregarEventos() {
+    btnRegistrar.addActionListener((ActionEvent e) -> {
+        String idZapato = txtSku.getText();  
+        UbicacionCombo ubicacionSeleccionada = (UbicacionCombo) cmbAlmacen.getSelectedItem();
+        int cantidad = Integer.parseInt(txtCantidad.getText());
+
         
-        btnRegistrar.addActionListener((ActionEvent e) -> {
-            String sku = txtSku.getText();
-            String almacen = (String) cmbAlmacen.getSelectedItem();
-            int cantidad = Integer.parseInt(txtCantidad.getText());
+        Inventario inventario = new Inventario(0, 0, 0, cantidad, idZapato, "", "", "", "", ubicacionSeleccionada.getNombre());
+        inventarioController.registrarInventario(inventario);
 
-            Inventario inventario = new Inventario(0, 0, 0, cantidad, sku, "", "", "", "", almacen);
-            inventarioController.registrarInventario(inventario);
-
-            modeloTabla.setRowCount(0); 
-            cargarTabla();   
-            limpiarCampos();
-        });
+        modeloTabla.setRowCount(0); 
+        cargarTabla();   
+        limpiarCampos();
+    });
         
         tbInventario.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                int fila = tbInventario.getSelectedRow();
-                if (fila != -1) {
-                    txtSku.setText(modeloTabla.getValueAt(fila, 1).toString());
-                    cmbAlmacen.setSelectedItem(modeloTabla.getValueAt(fila, 6).toString());
-                    txtCantidad.setText(modeloTabla.getValueAt(fila, 7).toString());
+    if (!e.getValueIsAdjusting()) {
+        int fila = tbInventario.getSelectedRow();
+        if (fila != -1) {
+            
 
-                    txtSku.setEnabled(false);
-                    cmbAlmacen.setEnabled(true);
-                    txtCantidad.setEnabled(true);
+            String almacen = modeloTabla.getValueAt(fila, 6).toString();
+            
+            for (int i = 0; i < cmbAlmacen.getItemCount(); i++) {
+                if (((UbicacionCombo) cmbAlmacen.getItemAt(i)).getNombre().equals(almacen)) {
+                    cmbAlmacen.setSelectedIndex(i);
+                    break;
                 }
             }
-        });
+            txtCantidad.setText(modeloTabla.getValueAt(fila, 7).toString());
+
+            
+            txtSku.setEnabled(false);
+            cmbAlmacen.setEnabled(true);
+            txtCantidad.setEnabled(true);
+        }
+    }
+});
+
 
         
         btnActualizar.addActionListener((ActionEvent e) -> {
-            int fila = tbInventario.getSelectedRow();
-            if (fila != -1) {
-                int inventarioId = (int) modeloTabla.getValueAt(fila, 0);
-                String sku = txtSku.getText();
-                String almacen = (String) cmbAlmacen.getSelectedItem();
-                int cantidad = Integer.parseInt(txtCantidad.getText());
+    int fila = tbInventario.getSelectedRow();
+    if (fila != -1) {
+        int inventarioId = (int) modeloTabla.getValueAt(fila, 0);
+        String idZapato = txtSku.getText();  // Usamos txtSku para el id_zapato
+        UbicacionCombo ubicacionSeleccionada = (UbicacionCombo) cmbAlmacen.getSelectedItem();
+        int cantidad = Integer.parseInt(txtCantidad.getText());
 
-                Inventario inventario = new Inventario(inventarioId, 0, 0, cantidad, sku, "", "", "", "", almacen);
-                inventarioController.actualizarInventario(inventario);
+        // Actualizamos el inventario usando el idZapato
+        Inventario inventario = new Inventario(inventarioId, 0, 0, cantidad, idZapato, "", "", "", "", ubicacionSeleccionada.getNombre());
+        inventarioController.actualizarInventario(inventario);
 
-                modeloTabla.setRowCount(0);
-                cargarTabla();
-                limpiarCampos();
-                bloquearCampos();
-            } else {
-                JOptionPane.showMessageDialog(this, "Selecciona una fila para actualizar.");
-            }
-        });
+        modeloTabla.setRowCount(0);
+        cargarTabla();
+        limpiarCampos();
+        bloquearCampos();
+    } else {
+        JOptionPane.showMessageDialog(this, "Selecciona una fila para actualizar.");
+    }
+});
+
+
 
         
         btnEliminar.addActionListener((ActionEvent e) -> {
@@ -118,7 +134,7 @@ public class IInventario extends JFrame {
     }
 
     private void desbloquearCampos() {
-        txtSku.setEnabled(false);
+        txtSku.setEnabled(true);
         cmbAlmacen.setEnabled(true);
         txtCantidad.setEnabled(true);
     }
@@ -130,65 +146,70 @@ public class IInventario extends JFrame {
         }
     }
 
-   private JPanel crearFormulario() {
-    JPanel panel = new JPanel(null);
-    panel.setBounds(10, 10, 760, 250);
+    private JPanel crearFormulario() {
+        JPanel panel = new JPanel(null);
+        panel.setBounds(10, 10, 760, 250);
 
-    int x = 30, y = 25, labelW = 80, fieldW = 120, h = 25, gap = 10;
-    int col2X = x + labelW + fieldW + 40;
+        int x = 30, y = 25, labelW = 80, fieldW = 120, h = 25, gap = 10;
+        int col2X = x + labelW + fieldW + 40;
 
-    // Etiquetas y campos de entrada
-    JLabel lblSku = new JLabel("SKU:");
-    lblSku.setBounds(x, y, labelW, h);
-    txtSku = new JTextField();
-    txtSku.setBounds(x + labelW, y, fieldW, h);
+       
+        JLabel lblSku = new JLabel("ID Zapato:");
+lblSku.setBounds(x, y, labelW, h);
+txtSku = new JTextField();
+txtSku.setBounds(x + labelW, y, fieldW, h);
 
-    JLabel lblAlmacen = new JLabel("Almacen:");
-    lblAlmacen.setBounds(x, y + (h + gap), labelW, h);
-    cmbAlmacen = new JComboBox<>(new String[]{"Almacen 1", "Almacen 2", "Almacen 3"}); 
-    cmbAlmacen.setBounds(x + labelW, y + (h + gap), fieldW, h);
+        JLabel lblAlmacen = new JLabel("Almacen:");
+        lblAlmacen.setBounds(x, y + (h + gap), labelW, h);
+        
+        // Cambiar el JComboBox para usar ubicaciones
+        cmbAlmacen = new JComboBox<>();
+        cargarUbicaciones();
+        cmbAlmacen.setBounds(x + labelW, y + (h + gap), fieldW, h);
 
-    JLabel lblCantidad = new JLabel("Cantidad:");
-    lblCantidad.setBounds(col2X, y, labelW, h);
-    txtCantidad = new JTextField();
-    txtCantidad.setBounds(col2X + labelW, y, fieldW, h);
+        JLabel lblCantidad = new JLabel("Cantidad:");
+        lblCantidad.setBounds(col2X, y, labelW, h);
+        txtCantidad = new JTextField();
+        txtCantidad.setBounds(col2X + labelW, y, fieldW, h);
 
-    
-    btnRegistrar = new JButton("Registrar");
-    btnRegistrar.setBounds(col2X, y + 2 * (h + gap), 100, h);
+        btnRegistrar = new JButton("Registrar");
+        btnRegistrar.setBounds(col2X, y + 2 * (h + gap), 100, h);
 
-    btnActualizar = new JButton("Actualizar");
-    btnActualizar.setBounds(col2X, y + 3 * (h + gap), 100, h);
+        btnActualizar = new JButton("Actualizar");
+        btnActualizar.setBounds(col2X, y + 3 * (h + gap), 100, h);
 
-    btnEliminar = new JButton("Eliminar");
-    btnEliminar.setBounds(col2X, y + 4 * (h + gap), 100, h);
+        btnEliminar = new JButton("Eliminar");
+        btnEliminar.setBounds(col2X, y + 4 * (h + gap), 100, h);
 
-    btnLimpiar = new JButton("Limpiar");
-    btnLimpiar.setBounds(col2X + 120, y + 3 * (h + gap), 100, h);
+        btnLimpiar = new JButton("Limpiar");
+        btnLimpiar.setBounds(col2X + 120, y + 3 * (h + gap), 100, h);
 
-    btnNuevo = new JButton("Nuevo");
-    btnNuevo.setBounds(col2X + 120, y + 2 * (h + gap), 100, h);
+        btnNuevo = new JButton("Nuevo");
+        btnNuevo.setBounds(col2X + 120, y + 2 * (h + gap), 100, h);
 
-   
-    panel.add(lblSku);
-    panel.add(txtSku);
-    panel.add(lblAlmacen);
-    panel.add(cmbAlmacen);
-    panel.add(lblCantidad);
-    panel.add(txtCantidad);
-    panel.add(btnRegistrar);
-    panel.add(btnActualizar);
-    panel.add(btnEliminar);
-    panel.add(btnLimpiar);
-    panel.add(btnNuevo);
+        panel.add(lblSku);
+        panel.add(txtSku);
+        panel.add(lblAlmacen);
+        panel.add(cmbAlmacen);
+        panel.add(lblCantidad);
+        panel.add(txtCantidad);
+        panel.add(btnRegistrar);
+        panel.add(btnActualizar);
+        panel.add(btnEliminar);
+        panel.add(btnLimpiar);
+        panel.add(btnNuevo);
 
-    
-    panel.setBorder(BorderFactory.createTitledBorder("Registro de Inventario"));
+        panel.setBorder(BorderFactory.createTitledBorder("Registro de Inventario"));
 
-    return panel;
-}
+        return panel;
+    }
 
-
+    private void cargarUbicaciones() {
+        List<UbicacionCombo> ubicaciones = inventarioController.obtenerUbicaciones();
+        for (UbicacionCombo u : ubicaciones) {
+            cmbAlmacen.addItem(u);
+        }
+    }
 
     private JScrollPane crearTabla() {
         modeloTabla = new DefaultTableModel(new String[]{"Num Inventario", "SKU", "Modelo", "Talla", "Color", "Marca", "Almacen", "Cantidad"}, 0);
