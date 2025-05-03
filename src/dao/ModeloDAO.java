@@ -26,31 +26,17 @@ public class ModeloDAO extends Conexion implements IRepositoryCRUD<Modelo> {
         return false;
         }
     }
-    /*@Override
-    public boolean registrar(Modelo modelo) {
-        String sql = "INSERT INTO modelo(nombre, genero, categoria_id, marca_id) VALUES (?, ?, ?, ?)";
-        try (Connection cn = getConexion(); PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, modelo.getNombre());
-            ps.setString(2, modelo.getGenero());
-            ps.setInt(3, modelo.getCategoria().getId());
-            ps.setInt(4, modelo.getMarca().getId());
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-*/
-    @Override
+
+     @Override
     public boolean actualizar(Modelo modelo) {
-        String sql = "UPDATE modelo SET nombre = ?, genero = ?, categoria_id = ?, marca_id = ? WHERE modelo_id = ?";
-        try (Connection cn = getConexion(); PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, modelo.getNombre());
-            ps.setString(2, modelo.getGenero());
-            ps.setInt(3, modelo.getCategoria().getId());
-            ps.setInt(4, modelo.getMarca().getId());
-            ps.setInt(5, modelo.getId());
-            return ps.executeUpdate() > 0;
+        String sql = "{CALL sp_actualizar_modelo(?, ?, ?, ?, ?)}";
+        try (Connection cn = getConexion(); CallableStatement cs = cn.prepareCall(sql)) {
+            cs.setString(1, modelo.getNombre());
+            cs.setString(2, modelo.getGenero());
+            cs.setInt(3, modelo.getCategoria().getId());
+            cs.setInt(4, modelo.getMarca().getId());
+            cs.setInt(5, modelo.getId());
+            return cs.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -59,10 +45,10 @@ public class ModeloDAO extends Conexion implements IRepositoryCRUD<Modelo> {
 
     @Override
     public boolean eliminar(int id) {
-        String sql = "DELETE FROM modelo WHERE modelo_id = ?";
-        try (Connection cn = getConexion(); PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+        String sql = "{CALL sp_eliminar_modelo(?)}";
+        try (Connection cn = getConexion(); CallableStatement cs = cn.prepareCall(sql)) {
+            cs.setInt(1, id);
+            return cs.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -72,16 +58,8 @@ public class ModeloDAO extends Conexion implements IRepositoryCRUD<Modelo> {
     @Override
     public List<Modelo> listar() {
         List<Modelo> lista = new ArrayList<>();
-        String sql = "SELECT m.modelo_id, m.nombre, m.genero, " +
-                     "c.categoria_id, c.nombre AS categoria_nombre, " +
-                     "ma.marca_id, ma.nombre AS marca_nombre " +
-                     "FROM modelo m " +
-                     "JOIN categoria c ON m.categoria_id = c.categoria_id " +
-                     "JOIN marca ma ON m.marca_id = ma.marca_id";
-        try (Connection cn = getConexion();
-             PreparedStatement ps = cn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
+        String sql = "{CALL sp_listar_modelos()}";
+        try (Connection cn = getConexion(); CallableStatement cs = cn.prepareCall(sql); ResultSet rs = cs.executeQuery()) {
             while (rs.next()) {
                 Modelo modelo = new Modelo();
                 modelo.setId(rs.getInt("modelo_id"));
@@ -107,15 +85,41 @@ public class ModeloDAO extends Conexion implements IRepositoryCRUD<Modelo> {
     }
 
     @Override
+    public Modelo traerEntidad(int id) {
+        String sql = "{CALL sp_traer_modelo_por_id(?)}";
+        try (Connection cn = getConexion(); CallableStatement cs = cn.prepareCall(sql)) {
+            cs.setInt(1, id);
+            try (ResultSet rs = cs.executeQuery()) {
+                if (rs.next()) {
+                    Modelo modelo = new Modelo();
+                    modelo.setId(rs.getInt("modelo_id"));
+                    modelo.setNombre(rs.getString("nombre"));
+                    modelo.setGenero(rs.getString("genero"));
+
+                    Categoria categoria = new Categoria();
+                    categoria.setId(rs.getInt("categoria_id"));
+                    categoria.setNombre(rs.getString("categoria_nombre"));
+                    modelo.setCategoria(categoria);
+
+                    Marca marca = new Marca();
+                    marca.setId(rs.getInt("marca_id"));
+                    marca.setNombre(rs.getString("marca_nombre"));
+                    modelo.setMarca(marca);
+
+                    return modelo;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public List<Modelo> filtrar(String params) {
         return new ArrayList<>();
     }
 
-    @Override
-    public Modelo traerEntidad(int id) {
-        return null;
-    }
-//modelo
     public List<Categoria> listarCategorias() {
         List<Categoria> categorias = new ArrayList<>();
         String sql = "SELECT categoria_id, nombre FROM categoria";
