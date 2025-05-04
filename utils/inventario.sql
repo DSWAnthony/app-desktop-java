@@ -735,3 +735,86 @@ select * from categoria where categoria_id = cod;
 
 END$$
 DELIMITER ;
+
+--Ultimos cambios
+
+
+CREATE TABLE `usuarios` (
+   `usuario` varchar(30) NOT NULL,
+   `contrasena` varchar(30) NOT NULL
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+insert into usuarios(usuario,contrasena)
+ values
+ ("u","io");
+
+ DELIMITER //
+
+ CREATE PROCEDURE sp_registrar_marca(
+     IN p_nombre VARCHAR(100)
+ )
+ BEGIN
+     INSERT INTO marca (nombre) VALUES (p_nombre);
+ END //
+
+ DELIMITER ;
+
+ DELIMITER //
+
+ CREATE PROCEDURE sp_listar_marcas()
+ BEGIN
+     SELECT id, nombre FROM marca ORDER BY id;
+ END //
+
+ DELIMITER ;
+
+ DELIMITER //
+
+ CREATE PROCEDURE sp_actualizar_marca(
+     IN p_id INT,
+     IN p_nombre VARCHAR(100)
+ )
+ BEGIN
+     UPDATE marca SET nombre = p_nombre WHERE id = p_id;
+ END //
+
+ DELIMITER ;
+
+ DELIMITER //
+
+ CREATE PROCEDURE sp_eliminar_marca(
+     IN p_id INT
+ )
+ BEGIN
+     DELETE FROM marca WHERE id = p_id;
+ END //
+
+ DELIMITER ;
+
+ DELIMITER //
+
+ CREATE PROCEDURE sp_filtrar_marca(
+     IN p_nombre VARCHAR(100)
+ )
+ BEGIN
+     SELECT id, nombre
+     FROM marca
+     WHERE nombre LIKE CONCAT('%', p_nombre, '%');
+ END //
+
+ DELIMITER ;
+
+
+ DELIMITER //
+
+ CREATE PROCEDURE sp_obtener_marca(
+     IN p_id INT
+ )
+ BEGIN
+     SELECT id, nombre
+     FROM marca
+     WHERE id = p_id;
+ END //
+
+ DELIMITER ;
