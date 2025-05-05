@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import config.Conexion;
 import java.sql.Connection;
@@ -18,34 +19,55 @@ import repository.IRepositoryCRUD;
 public class ZapatillaDAO extends Conexion implements IRepositoryCRUD<Zapatilla>{
     private static final String listarZapatillas = "CALL ListarZapatillas()";
     private static final String insertarZapatilla = "CALL InsertarZapatilla(?, ?, ?, ?, ?)";
+    private static final String actualizarZapatilla = "CALL ActualizarZapatilla(?, ?, ?, ?, ?)";
+    private ModeloDAO modeloDAO = new ModeloDAO();
+    
     
     @Override
     public boolean registrar(Zapatilla zapatilla) {
-        try(
+           try(
                 Connection cn = getConexion();
                 CallableStatement procedure = cn.prepareCall(insertarZapatilla);       
            ) 
         {
             procedure.setString(1, zapatilla.getSku());
             procedure.setString(2, zapatilla.getColor());
-            procedure.setDouble(3, zapatilla.getCosto());
+            procedure.setDouble(3, zapatilla.getPrecio());
             procedure.setDouble(4, zapatilla.getTalla());
             
             if (zapatilla.getModelo().getId() != null) {
-                
+                procedure.setInt(5, zapatilla.getModelo().getId());
             } else{
-            
+                System.out.println("error");
             }
             
+            return procedure.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(ZapatillaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+           return false;
     }
 
     @Override
-    public boolean actualizar(Zapatilla entidad) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean actualizar(Zapatilla zapatilla) {
+           try(
+                Connection cn = getConexion();
+                CallableStatement procedure = cn.prepareCall(actualizarZapatilla);       
+           ) 
+        {
+            procedure.setString(1, zapatilla.getColor());
+            procedure.setDouble(2, zapatilla.getPrecio());
+            procedure.setDouble(3, zapatilla.getTalla());
+            procedure.setInt(4, zapatilla.getModelo().getId());
+
+            procedure.setString(5, zapatilla.getSku());
+            
+            
+            return procedure.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ZapatillaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           return false;
     }
 
     @Override
@@ -109,4 +131,20 @@ public class ZapatillaDAO extends Conexion implements IRepositoryCRUD<Zapatilla>
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
+    
+    public boolean eliminarPorSku(String sku){
+            try(
+                Connection cn = getConexion();
+                PreparedStatement st = cn.prepareStatement("DELETE FROM zapato WHERE sku = ?");       
+           ) 
+        {
+            
+            st.setString(1, sku);
+            
+            return st.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ZapatillaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           return false;
+    }
 }

@@ -15,5 +15,16 @@ public class ZapatillaController {
         return zapatillaDao.listar();
     }
     
+    public boolean registrarZapatilla(Zapatilla zapatilla){
+        return zapatillaDao.registrar(zapatilla);
+    }
+    
+    public boolean actualizarZapatilla(Zapatilla zapatilla){
+        return zapatillaDao.actualizar(zapatilla);
+    }
+    
+    public boolean eliminarZapatilla(String sku){
+        return zapatillaDao.eliminarPorSku(sku);
+    }
 }
  
