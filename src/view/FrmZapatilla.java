@@ -52,7 +52,6 @@ public class FrmZapatilla extends JInternalFrame {
         marcaController = new MarcaDAO();
         
         add(crearFormulario(), BorderLayout.NORTH);
-        add(crearBuscador(), BorderLayout.CENTER);
         add(crearTabla(), BorderLayout.SOUTH);
         
         setSize(900, 600); // Ajusta según necesidad
@@ -159,30 +158,7 @@ public class FrmZapatilla extends JInternalFrame {
     }
 
 //dalete
-    private JPanel crearBuscador() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        panel.setPreferredSize(new Dimension(800, 50));
-
-        JLabel lblBuscar = new JLabel("Buscar:");
-        txtBuscar = new JTextField(20);
-        btnActualizar = new JButton("Actualizar");
-        btnEliminar = new JButton("Eliminar");
-
-        panel.add(lblBuscar);
-        panel.add(txtBuscar);
-        panel.add(btnActualizar);
-        panel.add(btnEliminar);
-
-        // Filtro en tiempo real
-        txtBuscar.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                filterTable(txtBuscar.getText());
-            }
-        });
-
-        return panel;
-    }
+  
 
     private JScrollPane crearTabla() {
         modeloTabla = new DefaultTableModel(new String[]{"Sku","Modelo","Marca","Color","Precio","Talla","Categoria"}, 0);

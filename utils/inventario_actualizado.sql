@@ -655,14 +655,14 @@ CREATE TABLE `user` (
 CREATE TABLE `usuarios` (
   `usuario` varchar(30) NOT NULL,
   `contrasena` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
 INSERT INTO `usuarios` (`usuario`, `contrasena`) VALUES
-('u', 'io');
+('root', '123');
 
 -- --------------------------------------------------------
 
