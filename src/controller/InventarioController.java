@@ -11,7 +11,7 @@ public class InventarioController {
         this.inventarioDao = new InventarioDAO();
     }
 
-    // Métodos relacionados con el Inventario
+  
 
     public List<Inventario> listarInventarios() {
         return inventarioDao.listar();

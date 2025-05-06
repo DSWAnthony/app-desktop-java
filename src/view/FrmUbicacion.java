@@ -20,22 +20,38 @@ public class FrmUbicacion extends JInternalFrame {
     private DefaultTableModel modeloTabla;
     private UbicacionController ubicacionController;
     private void agregarEventos() {
-        btnRegistrar.addActionListener((ActionEvent e) -> {
+        
+        tbUbicaciones.getSelectionModel().addListSelectionListener(event -> {
+    if (!event.getValueIsAdjusting() && tbUbicaciones.getSelectedRow() != -1) {
+        int fila = tbUbicaciones.getSelectedRow();
+        txtContenedor.setText(modeloTabla.getValueAt(fila, 1).toString());
+        txtEstante.setText(modeloTabla.getValueAt(fila, 2).toString());
+        txtPasillo.setText(modeloTabla.getValueAt(fila, 3).toString());
+    }
+});
+btnRegistrar.addActionListener((ActionEvent e) -> {
+    String contenedor = txtContenedor.getText().trim();
+    String estante = txtEstante.getText().trim();
+    String pasillo = txtPasillo.getText().trim();
 
-            String contenedor = txtContenedor.getText();
-            String estante = txtEstante.getText();
-            String pasillo = txtPasillo.getText();
+    if (contenedor.isEmpty() || estante.isEmpty() || pasillo.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
-            Ubicacion u = new Ubicacion();
+    Ubicacion u = new Ubicacion();
     u.setContenedor(contenedor);
     u.setEstante(estante);
     u.setPasillo(pasillo);
 
     ubicacionController.registrarUbicacion(u);
-            modeloTabla.setRowCount(0); // Limpiar tabla
-            cargarTabla(modeloTabla);   // Volver a cargar
-            limpiarCampos();
-        });
+    modeloTabla.setRowCount(0); 
+    cargarTabla(modeloTabla);   
+    limpiarCampos();
+});
+
+
+
 
         btnActualizar.addActionListener((ActionEvent e) -> {
 
@@ -63,17 +79,25 @@ public class FrmUbicacion extends JInternalFrame {
         });
 
         btnEliminar.addActionListener((ActionEvent e) -> {
-            int fila = tbUbicaciones.getSelectedRow();
-            if (fila != -1) {
-                int id = (int) modeloTabla.getValueAt(fila, 0);
-                ubicacionController.eliminarUbicacion(id);
-                modeloTabla.setRowCount(0);
-                cargarTabla(modeloTabla);
-                limpiarCampos();
-            } else {
-                JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar.");
-            }
-        });
+    int fila = tbUbicaciones.getSelectedRow();
+    if (fila != -1) {
+        int confirmacion = JOptionPane.showConfirmDialog(this, 
+                "¿Estás seguro de que deseas eliminar esta ubicación?", 
+                "Confirmación de eliminación", 
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            int id = (int) modeloTabla.getValueAt(fila, 0);
+            ubicacionController.eliminarUbicacion(id);
+            modeloTabla.setRowCount(0);
+            cargarTabla(modeloTabla);
+            limpiarCampos();
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar.");
+    }
+});
+
 
         btnLimpiar.addActionListener((ActionEvent e) -> {
             limpiarCampos();
@@ -109,7 +133,6 @@ public class FrmUbicacion extends JInternalFrame {
         int x = 30, y = 25, labelW = 80, fieldW = 120, h = 25, gap = 10;
         int col2X = x + labelW + fieldW + 40;
 
-        // Campos columna 1
         JLabel lblContenedor = new JLabel("Contenedor:");
         lblContenedor.setBounds(x, y, labelW, h);
         txtContenedor = new JTextField();

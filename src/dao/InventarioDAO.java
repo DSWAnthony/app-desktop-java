@@ -12,21 +12,50 @@ import java.util.List;
 public class InventarioDAO implements IRepositoryCRUD<Inventario> {
 
     @Override
-    public boolean registrar(Inventario i) {
+public boolean registrar(Inventario i) {
+    // Verificar si zapato_id existe
+    String sqlZapatoCheck = "SELECT 1 FROM zapato WHERE zapato_id = ?";
+    String sqlUbicacionCheck = "SELECT 1 FROM ubicacion_almacen WHERE ubicacion_id = ?";
+    try (Connection con = Conexion.getConexion()) {
+
+        // Verificar zapato_id
+        try (PreparedStatement psZapato = con.prepareStatement(sqlZapatoCheck)) {
+            psZapato.setInt(1, i.getZapatoId());
+            try (ResultSet rs = psZapato.executeQuery()) {
+                if (!rs.next()) {
+                    System.err.println("Error: El zapato con ID " + i.getZapatoId() + " no existe.");
+                    return false;
+                }
+            }
+        }
+
+        // Verificar ubicacion_id
+        try (PreparedStatement psUbicacion = con.prepareStatement(sqlUbicacionCheck)) {
+            psUbicacion.setInt(1, i.getUbicacionId());
+            try (ResultSet rs = psUbicacion.executeQuery()) {
+                if (!rs.next()) {
+                    System.err.println("Error: La ubicación con ID " + i.getUbicacionId() + " no existe.");
+                    return false;
+                }
+            }
+        }
+
+        // Si ambos existen, registrar en inventario
         String sql = "{CALL sp_RegistrarInventario(?, ?, ?)}";
-        try (Connection con = Conexion.getConexion();
-             CallableStatement cs = con.prepareCall(sql)) {
+        try (CallableStatement cs = con.prepareCall(sql)) {
             cs.setInt(1, i.getZapatoId());
             cs.setInt(2, i.getUbicacionId());
             cs.setInt(3, i.getCantidadActual());
             cs.execute();
             return true;
-        } catch (SQLException e) {
-            System.err.println("Error al registrar inventario: " + e.getMessage());
         }
-        return false;
+
+    } catch (SQLException e) {
+        System.err.println("Error al registrar inventario: " + e.getMessage());
     }
 
+    return false;
+} 
    @Override
 public boolean actualizar(Inventario i) {
     String sql = "{CALL sp_EditarInventario(?, ?, ?)}"; 

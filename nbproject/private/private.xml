@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
-<<<<<<< HEAD
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-=======
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2"/>
->>>>>>> d3df6a2 (added gitignore)
         <group>
-            <file>file:/C:/Users/JOSUE/Desktop/ELOY/app-desktop-java/src/config/Conexion.java</file>
-            <file>file:/C:/Users/JOSUE/Desktop/ELOY/app-desktop-java/src/view/Main_1.java</file>
-            <file>file:/C:/Users/JOSUE/Desktop/ELOY/app-desktop-java/src/view/FrmCategoria.java</file>
-            <file>file:/C:/Users/JOSUE/Desktop/ELOY/app-desktop-java/src/view/Main.java</file>
-            <file>file:/C:/Users/JOSUE/Desktop/ELOY/app-desktop-java/src/view/AppMenu.java</file>
-            <file>file:/C:/Users/JOSUE/Desktop/ELOY/app-desktop-java/src/images/logo-elite.png</file>
+            <file>file:/C:/Users/Cristian/Desktop/E1%20-%20Cruz%20Remuzgo/src/view/FrmInventario.java</file>
+            <file>file:/C:/Users/Cristian/Desktop/E1%20-%20Cruz%20Remuzgo/src/controller/InventarioController.java</file>
+            <file>file:/C:/Users/Cristian/Desktop/E1%20-%20Cruz%20Remuzgo/src/dao/InventarioDAO.java</file>
+            <file>file:/C:/Users/Cristian/Desktop/E1%20-%20Cruz%20Remuzgo/src/view/AppMenu.java</file>
+            <file>file:/C:/Users/Cristian/Desktop/E1%20-%20Cruz%20Remuzgo/src/model/Inventario.java</file>
+            <file>file:/C:/Users/Cristian/Desktop/E1%20-%20Cruz%20Remuzgo/src/view/FrmUbicacion.java</file>
+            <file>file:/C:/Users/Cristian/Desktop/E1%20-%20Cruz%20Remuzgo/src/view/FrmZapatilla.java</file>
         </group>
     </open-files>
 </project-private>

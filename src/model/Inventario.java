@@ -18,20 +18,21 @@ public class Inventario {
     }
 
     public Inventario(int inventarioId, int zapatoId, int ubicacionId, int cantidadActual, String sku,
-                      String modelo, String talla, String color, String marca, String almacen) {
-        this.inventarioId = inventarioId;
-        this.zapatoId = zapatoId;
-        this.ubicacionId = ubicacionId;
-        this.cantidadActual = cantidadActual;
-        this.sku = sku;
-        this.modelo = modelo;
-        this.talla = talla;
-        this.color = color;
-        this.marca = marca;
-        this.almacen = almacen;
-    }
+                  String modelo, String talla, String color, String marca, String almacen)
+{
+    this.inventarioId = inventarioId;
+    this.zapatoId = zapatoId; 
+    this.sku = sku;
+    this.ubicacionId = ubicacionId;
+    this.cantidadActual = cantidadActual;
+    this.modelo = modelo;
+    this.talla = talla;
+    this.color = color;
+    this.marca = marca;
+    this.almacen = almacen;
+}
 
-    // Getters y setters
+
 
     public int getInventarioId() {
         return inventarioId;
