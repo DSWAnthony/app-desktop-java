@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import model.Categoria;
@@ -23,8 +24,9 @@ import model.Modelo;
 import model.Zapatilla;
 import report.ReporteService;
 
-public class IZapatillas extends JFrame {
-
+public class FrmZapatilla extends JInternalFrame {
+    
+    private static FrmZapatilla instancia;
     private JTextField txtColor, txtSku, txtPrecio, txtTalla;
     private JButton btnRegistrar, btnActualizar, btnEliminar, btnGenerarReporte, btnNuevo;
     private JTextField txtBuscar;
@@ -39,9 +41,9 @@ public class IZapatillas extends JFrame {
     private CategoriaDAO categoriaController ;
     private MarcaDAO marcaController ;
 
-    public IZapatillas() {
-        super("Inventario de Zapatillas");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    public FrmZapatilla() {
+         super("Zapatillas", false, true, false, false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
         zapatillaController = new ZapatillaController();
@@ -52,10 +54,9 @@ public class IZapatillas extends JFrame {
         add(crearFormulario(), BorderLayout.NORTH);
         add(crearBuscador(), BorderLayout.CENTER);
         add(crearTabla(), BorderLayout.SOUTH);
-
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);  
+        
+        setSize(900, 600); // Ajusta según necesidad
+        setLocation(0, 0); // Opcional: posición inicial
     }
 
 
@@ -189,6 +190,14 @@ public class IZapatillas extends JFrame {
             
         cargarTabla(modeloTabla);
         JScrollPane scrollPane = new JScrollPane(tbZapatillas);
+        tbZapatillas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                seleccionarFila();
+            }
+            
+        });
+        
         scrollPane.setPreferredSize(new Dimension(800, 300));
         return scrollPane;
     }
@@ -210,10 +219,6 @@ public class IZapatillas extends JFrame {
         
         
         
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(IZapatillas::new);
     }
 
     private void onGenerarReporte(ActionEvent e) {
@@ -367,5 +372,12 @@ public class IZapatillas extends JFrame {
          return null;
     }
     
+    
+     public static FrmZapatilla getInstancia() {
+        if (instancia == null || instancia.isClosed()) {
+            instancia = new FrmZapatilla();
+        }
+        return instancia;
+    }
 
 }

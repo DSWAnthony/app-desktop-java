@@ -7,9 +7,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import model.UbicacionCombo;
-public class IInventario extends JFrame {
-
+public class FrmInventario extends JInternalFrame {
+    private static FrmInventario instancia;
     private JTextField txtSku, txtCantidad;
     private JComboBox<UbicacionCombo> cmbAlmacen;
     private JButton btnRegistrar, btnActualizar, btnEliminar, btnLimpiar, btnNuevo;
@@ -18,12 +19,11 @@ public class IInventario extends JFrame {
     private InventarioController inventarioController;
 
     // Constructor del formulario
-    public IInventario() {
-    super("Gestión de Inventario");
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    public FrmInventario() {
+    super("Gestión de Inventario",false,true,false,false);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setLayout(null);
     setSize(800, 600);
-    setLocationRelativeTo(null);
 
     inventarioController = new InventarioController();
 
@@ -34,8 +34,6 @@ public class IInventario extends JFrame {
 
     
     txtSku.setEnabled(false);
-
-    setVisible(true);
 }
 
     private void agregarEventos() {
@@ -221,7 +219,10 @@ txtSku.setBounds(x + labelW, y, fieldW, h);
         return scrollPane;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(IInventario::new);
+     public static FrmInventario getInstancia() {
+        if (instancia == null || instancia.isClosed()) {
+            instancia = new FrmInventario();
+        }
+        return instancia;
     }
 }

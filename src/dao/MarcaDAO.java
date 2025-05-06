@@ -20,15 +20,14 @@ public class MarcaDAO extends Conexion implements IRepositoryCRUD<Marca> {
 
     @Override
     public boolean registrar(Marca entidad) {
-        String sql = "{call sp_crear_categoria(?,?)}";
+        String sql = "{call sp_registrar_marca(?)}";
 
         try {
 
             con = this.getConexion();
             cs = con.prepareCall(sql);
 
-            cs.setInt(1, entidad.getId());
-            cs.setString(2, entidad.getNombre());
+            cs.setString(1, entidad.getNombre());
 
             cs.execute();
 

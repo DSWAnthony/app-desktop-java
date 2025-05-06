@@ -1,12 +1,11 @@
 package view;
-import controller.UbicacionController;
 
-import javax.swing.SwingUtilities;
+import controller.UbicacionController;
+import view.IniciarSesion;
 
 public class Main {
     public static void main(String[] args) {
-        FrmUbicacion vista = new FrmUbicacion();
+        IniciarSesion vista = new IniciarSesion();
         vista.setVisible(true);
-        UbicacionController controller = new UbicacionController(vista);
     }
 }

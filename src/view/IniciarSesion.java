@@ -88,8 +88,4 @@ public class IniciarSesion extends JFrame {
 
         this.add(panel);
     }
-
-    public static void main(String[] args) {
-        new IniciarSesion();
-    }
 }

@@ -5,7 +5,9 @@ import javax.swing.table.DefaultTableModel;
 import model.Categoria;
 import model.Marca;
 
-public class FrmModelo extends JFrame {
+public class FrmModelo extends JInternalFrame {
+    
+    private static FrmModelo instancia;
 //modelo
     private JTextField txtID, txtNombre;
     private JRadioButton rbtnMasculino, rbtnFemenino, rbtnUnisex;
@@ -17,9 +19,9 @@ public class FrmModelo extends JFrame {
     private DefaultTableModel tableModel;
 
     public FrmModelo() {
-        setTitle("Gestión de Modelos");
+        super("Modelo", false, true, false, false);
         setSize(850, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(null);
 
         // Labels
@@ -93,9 +95,6 @@ public class FrmModelo extends JFrame {
         add(scrollPane);
         add(btnAgregar); add(btnActualizar); add(btnEliminar); add(btnLimpiar);
 
-        setLocationRelativeTo(null);
-        setVisible(true);
-
         SwingUtilities.invokeLater(() -> txtNombre.requestFocusInWindow());
     }
 
@@ -168,5 +167,12 @@ public class FrmModelo extends JFrame {
 
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
+    }
+    
+     public static FrmModelo getInstancia() {
+        if (instancia == null || instancia.isClosed()) {
+            instancia = new FrmModelo();
+        }
+        return instancia;
     }
 }

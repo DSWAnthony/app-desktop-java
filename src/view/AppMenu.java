@@ -1,6 +1,10 @@
 package view;
 
 
+import controller.CProveedor;
+import controller.ModeloController;
+import controller.UbicacionController;
+import dao.ProveedorDAO;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -82,8 +86,8 @@ public class AppMenu extends JFrame implements ActionListener {
         panelMenu.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         String[] nombres = {
-                "Categoría", "Marca", "Cliente", "Proveedor",
-                "Venta", "Usuario", "mipescuezo"
+                "Categoría", "Marca", "Zapatillas", "Modelo",
+                "Inventario", "Ubicacion", "Proveedor"
         };
 
         for (String nombre : nombres) {
@@ -129,22 +133,32 @@ public class AppMenu extends JFrame implements ActionListener {
             case "Marca":
                 AbrirFrm(FrmMarca.getInstancia());
                 break;
-            case "Cliente":
+            case "Zapatillas":
+                System.out.println("Abriendo");
+                AbrirFrm(FrmZapatilla.getInstancia());
+                break;
+            case "Modelo":
+                  FrmModelo vista = FrmModelo.getInstancia();
+                  new ModeloController(vista);
+                    AbrirFrm(vista);
+                break;
+            case "Inventario":
+                  AbrirFrm(FrmInventario.getInstancia());
+                break;
+            case "Ubicacion":
+//                  FrmUbicacion vistaUbicacion = FrmUbicacion.getInstancia();
+//                  new UbicacionController()
+                  AbrirFrm(FrmUbicacion.getInstancia());
                 break;
             case "Proveedor":
-                break;
-            case "Venta":
-                break;
-            case "Usuario":
+                  ProveedorDAO daoP = new ProveedorDAO();
+                  FrmProveedor vistaP = FrmProveedor.getInstancia();
+                   new CProveedor(vistaP, daoP);
+                  AbrirFrm(vistaP);
                 break;
         }
     }
 
 
-
-    public static void main(String[] args) {
-        AppMenu app_menu = new AppMenu();
-        app_menu.setVisible(true);
-    }
 }
 

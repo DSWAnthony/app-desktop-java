@@ -1,98 +1,180 @@
 package view;
 
+import controller.UbicacionController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import model.Ubicacion;
 
-public class FrmUbicacion extends JFrame {
+public class FrmUbicacion extends JInternalFrame {
 
-    private JButton btnAgregar, btnActualizar, btnEliminar, btnLimpiar;
-    private JTextField txtContenedor, txtEstante, txtPasillo;
-    private JTable table;
-    private DefaultTableModel tableModel;
-    private JTextField txtID;
-    
-    
-public FrmUbicacion() {
-    setTitle("Gestión de Ubicaciones");
-    setSize(800, 600);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setLayout(null);
+    private static FrmUbicacion instancia;
+    private JTextField txtContenedor, txtEstante, txtPasillo, txtBuscar;
+    private JButton btnRegistrar, btnActualizar, btnEliminar, btnLimpiar;
+    private JTable tbUbicaciones;
+    private DefaultTableModel modeloTabla;
+    private UbicacionController ubicacionController;
+    private void agregarEventos() {
+        btnRegistrar.addActionListener((ActionEvent e) -> {
 
-    // Crear etiquetas
-    JLabel lblID = new JLabel("ID:");
-    JLabel lblContenedor = new JLabel("Contenedor:");
-    JLabel lblEstante = new JLabel("Estante:");
-    JLabel lblPasillo = new JLabel("Pasillo:");
+            String contenedor = txtContenedor.getText();
+            String estante = txtEstante.getText();
+            String pasillo = txtPasillo.getText();
 
-    // Crear campos de texto
-    txtID = new JTextField();
-    txtID.setEditable(false);  // Campo ID
-    txtContenedor = new JTextField();
-    
-    txtEstante = new JTextField();
-    txtPasillo = new JTextField();
+            Ubicacion u = new Ubicacion();
+    u.setContenedor(contenedor);
+    u.setEstante(estante);
+    u.setPasillo(pasillo);
 
-    // Crear botones
-    btnAgregar = new JButton("Agregar");
-    btnActualizar = new JButton("Editar");
-    btnEliminar = new JButton("Eliminar");
-    btnLimpiar = new JButton("Nuevo");
+    ubicacionController.registrarUbicacion(u);
+            modeloTabla.setRowCount(0); // Limpiar tabla
+            cargarTabla(modeloTabla);   // Volver a cargar
+            limpiarCampos();
+        });
 
-    // Crear tabla con modelo
-    tableModel = new DefaultTableModel(new String[]{"ID", "Contenedor", "Estante", "Pasillo"}, 0);
-    table = new JTable(tableModel);
-    JScrollPane scrollPane = new JScrollPane(table);
+        btnActualizar.addActionListener((ActionEvent e) -> {
 
-    // Posicionar componentes
-    lblID.setBounds(50, 20, 100, 30);
-    txtID.setBounds(150, 20, 200, 30);
+            int fila = tbUbicaciones.getSelectedRow();
+            if (fila != -1) {
+                int id = (int) modeloTabla.getValueAt(fila, 0);
+                String contenedor = txtContenedor.getText();
+                String estante = txtEstante.getText();
+                String pasillo = txtPasillo.getText();
 
-    lblContenedor.setBounds(50, 60, 100, 30);
-    txtContenedor.setBounds(150, 60, 200, 30);
+                Ubicacion u = new Ubicacion();
+                u.setUbicacionId(id);
+                u.setContenedor(contenedor);
+                u.setEstante(estante);
+                u.setPasillo(pasillo);
 
-    lblEstante.setBounds(50, 100, 100, 30);
-    txtEstante.setBounds(150, 100, 200, 30);
+                ubicacionController.actualizarUbicacion(u);
 
-    lblPasillo.setBounds(50, 140, 100, 30);
-    txtPasillo.setBounds(150, 140, 200, 30);
+                modeloTabla.setRowCount(0);
+                cargarTabla(modeloTabla);
+                limpiarCampos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona una fila para actualizar.");
+            }
+        });
 
-    scrollPane.setBounds(50, 190, 700, 300);
+        btnEliminar.addActionListener((ActionEvent e) -> {
+            int fila = tbUbicaciones.getSelectedRow();
+            if (fila != -1) {
+                int id = (int) modeloTabla.getValueAt(fila, 0);
+                ubicacionController.eliminarUbicacion(id);
+                modeloTabla.setRowCount(0);
+                cargarTabla(modeloTabla);
+                limpiarCampos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar.");
+            }
+        });
 
-    btnAgregar.setBounds(50, 510, 120, 30);
-    btnActualizar.setBounds(200, 510, 120, 30);
-    btnEliminar.setBounds(350, 510, 120, 30);
-    btnLimpiar.setBounds(500, 510, 120, 30);
-
-    // Agregar componentes a la ventana
-    add(lblID);
-    add(txtID);
-    add(lblContenedor);
-    add(txtContenedor);
-    add(lblEstante);
-    add(txtEstante);
-    add(lblPasillo);
-    add(txtPasillo);
-    add(scrollPane);
-    add(btnAgregar);
-    add(btnActualizar);
-    add(btnEliminar);
-    add(btnLimpiar);
-
-    setLocationRelativeTo(null); // Centrar ventana
-    
-    setVisible(true);
-    SwingUtilities.invokeLater(() -> txtContenedor.requestFocusInWindow());
-}
-
-
-    // Getters
-    public JButton getBtnAgregar() {
-        return btnAgregar;
+        btnLimpiar.addActionListener((ActionEvent e) -> {
+            limpiarCampos();
+        });
     }
-public JTextField getTxtID() {
-    return txtID;
-}
+
+    private void limpiarCampos() {
+        txtContenedor.setText("");
+        txtEstante.setText("");
+        txtPasillo.setText("");
+    }
+
+    public FrmUbicacion() {
+        super("Ubicaciones", false, true, false, false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLayout(null);
+
+        ubicacionController = new UbicacionController();
+
+        add(crearFormulario());
+        add(crearTabla());
+
+        agregarEventos(); 
+
+        setSize(800, 600);
+    }
+
+
+    private JPanel crearFormulario() {
+        JPanel panel = new JPanel(null);
+        panel.setBounds(10, 10, 760, 160);
+
+        int x = 30, y = 25, labelW = 80, fieldW = 120, h = 25, gap = 10;
+        int col2X = x + labelW + fieldW + 40;
+
+        // Campos columna 1
+        JLabel lblContenedor = new JLabel("Contenedor:");
+        lblContenedor.setBounds(x, y, labelW, h);
+        txtContenedor = new JTextField();
+        txtContenedor.setBounds(x + labelW, y, fieldW, h);
+
+        JLabel lblEstante = new JLabel("Estante:");
+        lblEstante.setBounds(x, y + (h + gap), labelW, h);
+        txtEstante = new JTextField();
+        txtEstante.setBounds(x + labelW, y + (h + gap), fieldW, h);
+
+        JLabel lblPasillo = new JLabel("Pasillo:");
+        lblPasillo.setBounds(x, y + 2*(h + gap), labelW, h);
+        txtPasillo = new JTextField();
+        txtPasillo.setBounds(x + labelW, y + 2*(h + gap), fieldW, h);
+
+        btnRegistrar = new JButton("Registrar");
+        btnRegistrar.setBounds(col2X, y, 100, h);
+        btnActualizar = new JButton("Actualizar");
+        btnActualizar.setBounds(col2X, y + (h + gap), 100, h);
+        btnEliminar = new JButton("Eliminar");
+        btnEliminar.setBounds(col2X, y + 2*(h + gap), 100, h);
+        btnLimpiar = new JButton("Limpiar");
+        btnLimpiar.setBounds(col2X + 120, y + 2*(h + gap), 100, h);
+
+        panel.add(lblContenedor);
+        panel.add(txtContenedor);
+        panel.add(lblEstante);
+        panel.add(txtEstante);
+        panel.add(lblPasillo);
+        panel.add(txtPasillo);
+        panel.add(btnRegistrar);
+        panel.add(btnActualizar);
+        panel.add(btnEliminar);
+        panel.add(btnLimpiar);
+
+        panel.setBorder(BorderFactory.createTitledBorder("Registro de Ubicación"));
+        return panel;
+    }
+
+    
+
+    private JScrollPane crearTabla() {
+        modeloTabla = new DefaultTableModel(new String[]{"ID", "Contenedor", "Estante", "Pasillo"}, 0);
+        tbUbicaciones = new JTable(modeloTabla);
+
+        cargarTabla(modeloTabla);
+        JScrollPane scrollPane = new JScrollPane(tbUbicaciones);
+        scrollPane.setBounds(10, 240, 760, 300);  
+        return scrollPane;
+    }
+
+    private void cargarTabla(DefaultTableModel model) {
+        List<Ubicacion> ubicaciones = ubicacionController.listarUbicaciones();
+
+        for (Ubicacion u : ubicaciones) {
+            model.addRow(new Object[]{u.getUbicacionId(), u.getContenedor(), u.getEstante(), u.getPasillo()});
+        }
+    }
+
+    private void filterTable(String text) {
+    }
+
+    public JButton getBtnRegistrar() {
+        return btnRegistrar;
+    }
 
     public JButton getBtnActualizar() {
         return btnActualizar;
@@ -118,23 +200,22 @@ public JTextField getTxtID() {
         return txtPasillo;
     }
 
-    public JTable getTable() {
-        return table;
+    public JTextField getTxtBuscar() {
+        return txtBuscar;
     }
 
-    public DefaultTableModel getTableModel() {
-        return tableModel;
+    public JTable getTbUbicaciones() {
+        return tbUbicaciones;
     }
 
-    // Métodos útiles
-    public void limpiarCampos() {
-        txtID.setText("");
-        txtContenedor.setText("");
-        txtEstante.setText("");
-        txtPasillo.setText("");
+    public DefaultTableModel getModeloTabla() {
+        return modeloTabla;
     }
-
-    public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+    
+    public static FrmUbicacion getInstancia() {
+        if (instancia == null || instancia.isClosed()) {
+            instancia = new FrmUbicacion();
+        }
+        return instancia;
     }
 }
